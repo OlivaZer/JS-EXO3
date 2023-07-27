@@ -1,0 +1,58 @@
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100vh;
+    background-image: url(imgs/jeu-morpion.jpg);
+    background-size: cover;
+}
+
+#board {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 5px;
+    width: 700px;
+}
+
+.box {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 5%;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    color: white;
+}
+#restartBtn{
+    background-color: black;
+    color: white;
+    width: 100px;
+    height: 25px;
+    border-radius: 10px;
+}
+
+#message {
+    margin-top: 10px;
+    font-size: 2em;
+    color: white;
+    animation: blink 2s linear infinite;
+}
+
+/* Définition de l'animation @keyframes "blink" */
+@keyframes blink {
+    0% {
+        /*Opacité à 100% au début de l'animation */
+        opacity: 1;
+    }
+    
+    100% {
+        /* Opacité à 100% à la fin de l'animation */
+        opacity: 1;
+    }
+}

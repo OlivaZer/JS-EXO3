@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+<body>
+    <div id="board">
+        <div class="box" id="box1"></div>
+        <div class="box" id="box2"></div>
+        <div class="box" id="box3"></div>
+        <div class="box" id="box4"></div>
+        <div class="box" id="box5"></div>
+        <div class="box" id="box6"></div>
+        <div class="box" id="box7"></div>
+        <div class="box" id="box8"></div>
+        <div class="box" id="box9"></div>
+    </div>
+    <!-- Message du tour de jeu ou partie terminée -->
+    <div id="message">C'est au tour de X</div>
+<!-- Bouton de rejouer caché au début -->
+    <button id="restartBtn" style="display:none;">Rejouer</button> 
+
+    <script>
+
+         // Sélection des cases du morpion
+        const boxes = document.querySelectorAll(".box");
+
+        // Tableau à deux dimensions pour suivre l'état de chaque case du morpion
+        const boardState = [
+            ['', '', ''],
+            ['', '', ''],
+            ['', '', '']
+        ];
+
+        // Joueur actuel, commence avec "X"
+        let currentPlayer = "X"; 
+
+        // Variable pour vérifier si la partie est terminée
+        let gameFinished = false;
+
+        // Fonction pour vérifier les conditions de victoire
+        function checkWinCondition() {
+            const winCombinations = [
+                // les lignes
+                [0, 1, 2], [3, 4, 5], [6, 7, 8], 
+                // Les colonnes
+                [0, 3, 6], [1, 4, 7], [2, 5, 8], 
+                // Les diagonales
+                [0, 4, 8], [2, 4, 6]             
+            ];
+
+            for (const combination of winCombinations) {
+                const [a, b, c] = combination;
+
+                // Vérifier si les cases de la combinaison sont toutes les mêmes (X ou O)
+                if (boardState[Math.floor(a / 3)][a % 3] && boardState[Math.floor(a / 3)][a % 3] === boardState[Math.floor(b / 3)][b % 3] && boardState[Math.floor(a / 3)][a % 3] === boardState[Math.floor(c / 3)][c % 3]) {
+                    gameFinished = true;
+                    return;
+                }
+            }
+
+            // Vérifier s'il y a égalité, si toutes les cases sont remplies
+            if ([...boxes].every((box, index) => box.textContent !== "" || boardState[Math.floor(index / 3)][index % 3])) {
+                gameFinished = true;
+            }
+        }
+
+        // Fonction pour gérer le clic sur une case
+        function handleClick(event) {
+            if (gameFinished || event.target.textContent !== "") {
+                return;
+            }
+
+            // Récupérer l'ID de la case cliquée pour obtenir sa position dans le tableau boardState
+            const boxId = event.target.id;
+            const rowIndex = Math.floor((parseInt(boxId.substr(3)) - 1) / 3);
+            const colIndex = (parseInt(boxId.substr(3)) - 1) % 3;
+
+            // Mettre à jour la case avec le symbole du joueur actuel (X ou O)
+            event.target.textContent = currentPlayer;
+            boardState[rowIndex][colIndex] = currentPlayer;
+
+            // Changer le joueur actuel pour le prochain tour
+            currentPlayer = currentPlayer === "X" ? "O" : "X";
+
+            // Vérifier les conditions de victoire et d'égalité
+            checkWinCondition();
+
+            // Afficher le message correspondant au tour de jeu ou à la fin de la partie
+            if (!gameFinished) {
+                document.getElementById("message").textContent = "C'est au tour de " + currentPlayer;
+            } else {
+                document.getElementById("message").textContent = "Partie terminée";
+            }
+        }
+
+        // Ajouter un gestionnaire d'événement de clic à chaque case du morpion
+        boxes.forEach(box => {
+            box.addEventListener("click", handleClick);
+        });
+    //**************************************************Rejouer (Bonus) **************************************//
+        function restartGame() {
+                // Réinitialiser la grille
+                boardState.forEach(row => row.fill(''));
+                boxes.forEach(box => box.textContent = '');
+
+                // Réinitialiser les variables de jeu
+                gameFinished = false;
+                currentPlayer = "X";
+                
+                // Afficher le message du tour de jeu pour le joueur X
+                document.getElementById("message").textContent = "C'est au tour de " + currentPlayer;
+                
+                // Cacher le bouton de rejouer
+                document.getElementById("restartBtn").style.display = "none";
+            }
+
+            // Gestionnaire d'événement pour le bouton de rejouer
+            document.getElementById("restartBtn").addEventListener("click", restartGame);
+            
+            // Vérifier si la partie est terminée après chaque coup
+            boxes.forEach(box => {
+                box.addEventListener("click", () => {
+                    handleClick(event);
+
+                    // Si la partie est terminée, afficher le bouton de rejouer
+                    if (gameFinished) {
+                        document.getElementById("restartBtn").style.display = "block";
+                    }
+                });
+            });
+
+    </script>
+</body>
+</html>
